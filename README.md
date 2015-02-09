@@ -2,7 +2,7 @@ Image Component for Yii2
 ========================
 Image Component for Yii2
 
-This extension is another version of [yii-easyImage](https://github.com/zhdanovartur/yii-easyimage), suitable for Yii2
+This extension is base on [yii-easyImage](https://github.com/zhdanovartur/yii-easyimage), used for Yii2.
 
 Installation
 ------------
@@ -47,6 +47,9 @@ return [
     ],
 ];
 ```
+####Parameters
+- string `$file` required - Image file path
+- string `$driver` - Driver: `GD`, `Imagick`
 
 ### ThumbOf
 You can create a thumbnail directly in the `View`:
@@ -56,12 +59,12 @@ You can create a thumbnail directly in the `View`:
 Yii::$app->easyImage->thumbOf('/path/to/image.jpg', ['rotate' => 90]);
 ```
 
-// or 
+// or
 ```php
 Yii::$app->easyImage->thumbOf('image.jpg', ['rotate' => 90],  ['class' => 'image']);
 ```
 
-// or 
+// or
 ```php
 Yii::$app->easyImage->thumbOf('image.png', [
     'resize' => ['width' => 100, 'height' => 100],

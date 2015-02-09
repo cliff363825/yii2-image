@@ -11,7 +11,7 @@ use yii\helpers\Html;
  * @author Artur Zhdanov <zhdanovartur@gmail.com>
  * @copyright Copyright &copy; Artur Zhdanov 2013-
  * @license http://www.opensource.org/licenses/bsd-license.php New BSD License
- * @version 1.0.2
+ * @version 1.0.4
  */
 class EasyImage extends Component
 {
@@ -63,6 +63,16 @@ class EasyImage extends Component
     public $retinaSupport = false;
 
     /**
+     * @var int Permissions for main cache directory and subdirectories.
+     */
+    public $newDirMode = 0775;
+
+    /**
+     * @var int Permissions for cached files.
+     */
+    public $newFileMode = 0660;
+
+    /**
      * @var string the Web-accessible directory that contains the images.
      */
     public $basePath = '@webroot';
@@ -86,6 +96,9 @@ class EasyImage extends Component
         }
     }
 
+    /**
+     * @inheritdoc
+     */
     public function init()
     {
         // Publish "retina.js" library (http://retinajs.com/)
@@ -128,11 +141,10 @@ class EasyImage extends Component
     public function detectPath($file)
     {
         if (!is_file($file)) {
-            $file = rtrim(Yii::getAlias($this->basePath), '/') . '/' . $file;
+            $file = rtrim(Yii::getAlias($this->basePath), "\\/") . '/' . $file;
             return is_file($file) ? $file : false;
-        } else {
-            return $file;
         }
+        return $file;
     }
 
     /**
@@ -167,7 +179,7 @@ class EasyImage extends Component
                     );
                     break;
                 case 'scaleAndCrop':
-                    $this->scaleAndCrop($value['width'], $value['height']);
+                    $this->scaleAndCrop($value['width'],$value['height']);
                     break;
                 case 'rotate':
                     if (is_array($value)) {
@@ -243,7 +255,9 @@ class EasyImage extends Component
                     throw new \Exception('Action "' . $key . '" is not found');
             }
         }
-        return $this->save($newFile, $this->quality);
+        $result = $this->save($newFile, $this->quality);
+        @chmod($newFile, $this->newFileMode);
+        return $result;
     }
 
     /**
@@ -269,7 +283,9 @@ class EasyImage extends Component
 
         // Make cache dir
         if (!is_dir($cachePath)) {
-            mkdir($cachePath, 0755, true);
+            mkdir($cachePath, $this->newDirMode, true);
+            chmod(Yii::getAlias($this->basePath) . $this->cachePath, $this->newDirMode);
+            chmod($cachePath, $this->newDirMode);
         }
 
         // Create and caching thumbnail use params
@@ -335,7 +351,7 @@ class EasyImage extends Component
             $height,
             self::RESIZE_INVERSE
         );
-        $this->crop($width, $height);
+        $this->crop($width,$height);
     }
 
     public function rotate($degrees)
@@ -382,5 +398,4 @@ class EasyImage extends Component
     {
         return $this->getImage()->render($type, $quality);
     }
-
 }

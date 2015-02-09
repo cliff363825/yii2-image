@@ -7,6 +7,6 @@ class EasyImageAsset extends AssetBundle
 {
     public $sourcePath = '@cliff363825/image/assets';
     public $js = [
-        'retina.js',
+        'retina.min.js',
     ];
 } 
