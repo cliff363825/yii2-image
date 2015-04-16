@@ -11,7 +11,7 @@ use yii\helpers\Html;
  * @author Artur Zhdanov <zhdanovartur@gmail.com>
  * @copyright Copyright &copy; Artur Zhdanov 2013-
  * @license http://www.opensource.org/licenses/bsd-license.php New BSD License
- * @version 1.0.4
+ * @version 1.0.5
  */
 class EasyImage extends Component
 {
@@ -179,7 +179,7 @@ class EasyImage extends Component
                     );
                     break;
                 case 'scaleAndCrop':
-                    $this->scaleAndCrop($value['width'],$value['height']);
+                    $this->scaleAndCrop($value['width'], $value['height']);
                     break;
                 case 'rotate':
                     if (is_array($value)) {
@@ -264,12 +264,13 @@ class EasyImage extends Component
      * This method returns the URL to the cached thumbnail.
      * @param string $file path
      * @param array $params
+     * @param mixed $hash cache version modifier
      * @return string URL path
      */
-    public function thumbSrcOf($file, $params = array())
+    public function thumbSrcOf($file, $params = array(), $hash = null)
     {
         // Paths
-        $hash = md5($file . serialize($params));
+        $hash = md5($file . serialize($params) . (string)$hash);
         $cachePath = Yii::getAlias($this->basePath) . $this->cachePath . $hash{0};
         $cacheFileExt = isset($params['type']) ? $params['type'] : pathinfo($file, PATHINFO_EXTENSION);
         $cacheFileName = $hash . '.' . $cacheFileExt;
@@ -319,12 +320,13 @@ class EasyImage extends Component
      * @param string $file path
      * @param array $params
      * @param array $htmlOptions
+     * @param mixed $hash cache version modifier
      * @return string HTML
      */
-    public function thumbOf($file, $params = array(), $htmlOptions = array())
+    public function thumbOf($file, $params = array(), $htmlOptions = array(), $hash = null)
     {
         return Html::img(
-            $this->thumbSrcOf($file, $params),
+            $this->thumbSrcOf($file, $params, $hash),
             $htmlOptions
         );
     }
@@ -351,7 +353,7 @@ class EasyImage extends Component
             $height,
             self::RESIZE_INVERSE
         );
-        $this->crop($width,$height);
+        $this->crop($width, $height);
     }
 
     public function rotate($degrees)
