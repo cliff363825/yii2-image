@@ -32,6 +32,17 @@ class EasyImage extends Component
     const FLIP_VERTICAL = 0x12;
 
     /**
+     * 文件保存根路径
+     * @var string
+     */
+    public $basePath = '@webroot';
+    /**
+     * 文件保存根url
+     * @var string
+     */
+    public $baseUrl = '@web';
+
+    /**
      * @var Image
      */
     private $_image;
@@ -71,16 +82,6 @@ class EasyImage extends Component
      * @var int Permissions for cached files.
      */
     public $newFileMode = 0660;
-
-    /**
-     * @var string the Web-accessible directory that contains the images.
-     */
-    public $basePath = '@webroot';
-
-    /**
-     * @var string the base URL for the relative images.
-     */
-    public $baseUrl = '@web';
 
     /**
      * Convert object to binary data of current image.
